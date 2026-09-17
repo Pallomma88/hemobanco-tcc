@@ -1,25 +1,25 @@
 const connection = require("../database/connection")
 
 async function listarTodos() {
-    return connection("doadores").select("*")
+    return connection("tipos_bloqueio").select("*")
 }
 
 async function buscarPorId(id) {
-    return connection("doadores").where({ id }).first()
-} 
+    return connection("tipos_bloqueio").where({ id }).first()
+}
+
 async function criar(dados) {
-    const [id] = await connection("doadores").insert(dados)
+    const [id] = await connection("tipos_bloqueio").insert(dados)
     return buscarPorId(id)
 }
 
-
 async function atualizar(id, dados) {
-    await connection("doadores").where({ id }).update(dados)
+    await connection("tipos_bloqueio").where({ id }).update(dados)
     return buscarPorId(id)
 }
 
 async function deletar(id) {
-    return connection("doadores").where({ id }).del()
+    return connection("tipos_bloqueio").where({ id }).del()
 }
 
 module.exports = {

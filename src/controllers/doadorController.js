@@ -12,17 +12,32 @@ async function listarTodos(req, res) {
     }
 
     async function criar(req, res) {
-        const [id] = await doadorModel.criar(req.body)
-        res.status(201).json({ id })
+        try {
+            const doador = await doadorModel.criar(req.body)
+            res.status(201).json(doador)
+        } catch (error) {
+            if (error.code === 'SQLITE_CONSTRAINT') {
+                return res.status(400).json({ error: "tipo_sanguineo_id ou endereco_id inválido" })
+            }
+            res.status(500).json({ error: "Erro ao criar doador" })
+     }
     }
     async function atualizar(req, res) {
-        const [id] = await doadorModel.atualizar(req.params.id, req.body)
+        try {
+        const doador = await doadorModel.atualizar(req.params.id, req.body)
+        if (!doador) return res.status(404).json({ error: "Doador não encontrado" })
         res.json(doador)
+    } catch (error) {
+        if (error.code === 'SQLITE_CONSTRAINT') {
+            return res.status(400).json({ error: "tipo_sanguineo_id ou endereco_id inválido" })
+        }
+        res.status(500).json({ error: "Erro ao atualizar doador" })
     }
-    async function deletar(req, res) {
-        await doadorModel.deletar(req.params.id)
-        res.status(204).send()
-    }
+}
+async function deletar(req, res) {
+    await doadorModel.deletar(req.params.id)
+    res.status(204).send()
+}
 
 module.exports = {
     listarTodos,

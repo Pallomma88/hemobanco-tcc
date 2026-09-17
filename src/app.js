@@ -2,6 +2,12 @@ const express = require("express")
 
 const testRoutes = require("./routes/testRoutes")
 const doadorRoutes = require("./routes/doadorRouters")
+const tipoSanguineoRoutes = require("./routes/tipoSanguineoRouter")
+const enderecoRoutes = require("./routes/enderecoRouter")
+const instituicaoRoutes = require("./routes/instituicaoRouter")
+const funcionarioRoutes = require("./routes/funcionarioRouter")
+const tipoDoadorRouter = require("./routes/tipoDoacaoRouter")
+const tipoBloqueioRoutes = require("./routes/tipoBloqueioRouter")
 
 const app = express()
 
@@ -9,6 +15,12 @@ app.use(express.json())
 
 app.use("/test", testRoutes)
 app.use("/doadores", doadorRoutes)
+app.use("/tipos-sanguineos", tipoSanguineoRoutes)
+app.use("/enderecos", enderecoRoutes)
+app.use("/instituicoes", instituicaoRoutes)
+app.use("/funcionarios", funcionarioRoutes)
+app.use("/tipos-doacao", tipoDoadorRouter)
+app.use("/tipos-bloqueio", tipoBloqueioRoutes)
 
 app.get("/", (req, res) => {
     res.send("API Hemobanco funcionando!")
