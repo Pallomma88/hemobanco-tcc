@@ -1,5 +1,6 @@
 const doacaoModel = require("../models/doacaoModel")
 const doadorModel = require("../models/doadorModel")
+const situacaoModel = require("../models/situacaoModel")
 
 // intervalo mínimo (em dias) entre doações, por sexo do doador
 const INTERVALO_MINIMO_DIAS = { M: 60, F: 90 }
@@ -30,6 +31,20 @@ async function criar(req, res) {
         const doador = await doadorModel.buscarPorId(doador_id)
         if (!doador) {
             return res.status(400).json({ error: "doador_id inválido" })
+        }
+
+        // Doador bloqueado: situacao_id aponta pra uma situação com tipo_bloqueio_id
+        // preenchido, e o bloqueio ainda não venceu (sem data_limite, ou data_limite no futuro)
+        if (doador.situacao_id) {
+            const situacao = await situacaoModel.buscarPorId(doador.situacao_id)
+            if (situacao && situacao.tipo_bloqueio_id) {
+                const bloqueioAtivo = !situacao.data_limite || new Date(situacao.data_limite) >= new Date(data_doacao)
+                if (bloqueioAtivo) {
+                    return res.status(400).json({
+                        error: `Doador está bloqueado para doação: ${situacao.motivo || situacao.descricao}${situacao.data_limite ? ` (até ${situacao.data_limite})` : ""}`
+                    })
+                }
+            }
         }
 
         const ultimaDoacao = await doacaoModel.buscarUltimaDoacaoDoDoador(doador_id)
