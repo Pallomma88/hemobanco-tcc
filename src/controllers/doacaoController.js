@@ -1,4 +1,8 @@
 const doacaoModel = require("../models/doacaoModel")
+const doadorModel = require("../models/doadorModel")
+
+// intervalo mínimo (em dias) entre doações, por sexo do doador
+const INTERVALO_MINIMO_DIAS = { M: 60, F: 90 }
 
 async function listarTodos(req, res) {
     const doacoes = await doacaoModel.listarTodos()
@@ -12,6 +16,35 @@ async function buscar(req, res) {
 }
 
 async function criar(req, res) {
+    const { data_doacao, doador_id } = req.body
+
+    if (!data_doacao || isNaN(new Date(data_doacao))) {
+        return res.status(400).json({ error: "data_doacao é obrigatória e precisa ser uma data válida" })
+    }
+
+    if (new Date(data_doacao) > new Date()) {
+        return res.status(400).json({ error: "data_doacao não pode ser uma data futura" })
+    }
+
+    if (doador_id) {
+        const doador = await doadorModel.buscarPorId(doador_id)
+        if (!doador) {
+            return res.status(400).json({ error: "doador_id inválido" })
+        }
+
+        const ultimaDoacao = await doacaoModel.buscarUltimaDoacaoDoDoador(doador_id)
+        if (ultimaDoacao) {
+            const diasMinimos = INTERVALO_MINIMO_DIAS[doador.sexo] || 60
+            const diasDesdeUltima = (new Date(data_doacao) - new Date(ultimaDoacao.data_doacao)) / (1000 * 60 * 60 * 24)
+
+            if (diasDesdeUltima < diasMinimos) {
+                return res.status(400).json({
+                    error: `Doador precisa aguardar ${diasMinimos} dias entre doações. Última doação foi há ${Math.floor(diasDesdeUltima)} dia(s).`
+                })
+            }
+        }
+    }
+
     try {
         const doacao = await doacaoModel.criar(req.body)
         res.status(201).json(doacao)
@@ -24,6 +57,10 @@ async function criar(req, res) {
 }
 
 async function atualizar(req, res) {
+    if (req.body.data_doacao && new Date(req.body.data_doacao) > new Date()) {
+        return res.status(400).json({ error: "data_doacao não pode ser uma data futura" })
+    }
+
     try {
         const doacao = await doacaoModel.atualizar(req.params.id, req.body)
         if (!doacao) return res.status(404).json({ error: "Doação não encontrada" })

@@ -1,4 +1,5 @@
 const doadorModel = require("../models/doadorModel")
+const { validarCPF } = require("../utils/validators")
 
 async function listarTodos(req, res) {
     const doadores = await doadorModel.listarTodos()
@@ -12,6 +13,9 @@ async function listarTodos(req, res) {
     }
 
     async function criar(req, res) {
+        if (!validarCPF(req.body.cpf)) {
+            return res.status(400).json({ error: "CPF inválido" })
+        }
         try {
             const doador = await doadorModel.criar(req.body)
             res.status(201).json(doador)
@@ -23,6 +27,9 @@ async function listarTodos(req, res) {
      }
     }
     async function atualizar(req, res) {
+        if (req.body.cpf !== undefined && !validarCPF(req.body.cpf)) {
+            return res.status(400).json({ error: "CPF inválido" })
+        }
         try {
         const doador = await doadorModel.atualizar(req.params.id, req.body)
         if (!doador) return res.status(404).json({ error: "Doador não encontrado" })

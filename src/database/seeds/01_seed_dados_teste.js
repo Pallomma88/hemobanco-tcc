@@ -1,6 +1,7 @@
 exports.seed = async function(knex) {
     // Limpa as tabelas na ordem certa (das que dependem de outras, para as que não dependem)
     await knex("doacoes").del()
+     await knex("doadores").update({ situacao_id: null })
     await knex("situacoes").del()
     await knex("doadores").del()
     await knex("funcionarios").del()
@@ -60,16 +61,16 @@ exports.seed = async function(knex) {
     ])
 
     await knex("doadores").insert([
-        { cpf: "38957214600", nome: "Ana Beatriz Oliveira", tipo_sanguineo_id: 1, endereco_id: 1 },
-        { cpf: "62841793500", nome: "Carlos Eduardo Santos", tipo_sanguineo_id: 5, endereco_id: 2 },
-        { cpf: "19473682800", nome: "Fernanda Lima Costa", tipo_sanguineo_id: 3, endereco_id: 3 },
-        { cpf: "50128463700", nome: "Rafael Almeida Pereira", tipo_sanguineo_id: 2, endereco_id: 1 },
-        { cpf: "84612395700", nome: "Juliana Martins Rocha", tipo_sanguineo_id: 6, endereco_id: 2 },
-        { cpf: "27364851900", nome: "Bruno Henrique Souza", tipo_sanguineo_id: 7, endereco_id: 4 },
-        { cpf: "91847263500", nome: "Camila Ferreira Dias", tipo_sanguineo_id: 4, endereco_id: 3 },
-        { cpf: "63519274800", nome: "Diego Rodrigues Alves", tipo_sanguineo_id: 8, endereco_id: 1 },
-        { cpf: "48273619500", nome: "Larissa Gomes Barbosa", tipo_sanguineo_id: 1, endereco_id: 4 },
-        { cpf: "75931682400", nome: "Thiago Monteiro Cardoso", tipo_sanguineo_id: 5, endereco_id: 2 }
+        { cpf: "38957214600", nome: "Ana Beatriz Oliveira", sexo: "F", tipo_sanguineo_id: 1, endereco_id: 1 },
+        { cpf: "62841793500", nome: "Carlos Eduardo Santos", sexo: "M", tipo_sanguineo_id: 5, endereco_id: 2 },
+        { cpf: "19473682800", nome: "Fernanda Lima Costa", sexo: "F", tipo_sanguineo_id: 3, endereco_id: 3 },
+        { cpf: "50128463700", nome: "Rafael Almeida Pereira", sexo: "M", tipo_sanguineo_id: 2, endereco_id: 1 },
+        { cpf: "84612395700", nome: "Juliana Martins Rocha", sexo: "F", tipo_sanguineo_id: 6, endereco_id: 2 },
+        { cpf: "27364851900", nome: "Bruno Henrique Souza", sexo: "M", tipo_sanguineo_id: 7, endereco_id: 4 },
+        { cpf: "91847263500", nome: "Camila Ferreira Dias", sexo: "F", tipo_sanguineo_id: 4, endereco_id: 3 },
+        { cpf: "63519274800", nome: "Diego Rodrigues Alves", sexo: "M", tipo_sanguineo_id: 8, endereco_id: 1 },
+        { cpf: "48273619500", nome: "Larissa Gomes Barbosa", sexo: "F", tipo_sanguineo_id: 1, endereco_id: 4 },
+        { cpf: "75931682400", nome: "Thiago Monteiro Cardoso", sexo: "M", tipo_sanguineo_id: 5, endereco_id: 2 }
     ])
 
     // situacoes referencia doadores e tipos_bloqueio, por isso vem depois dos dois
