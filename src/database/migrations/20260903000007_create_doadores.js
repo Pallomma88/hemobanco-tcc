@@ -11,9 +11,6 @@ exports.up = function(knex) {
             .references("id").inTable("tipos_sanguineos")
         table.integer("endereco_id").unsigned().notNullable()
             .references("id").inTable("enderecos")
-        // situacao_id eh adicionado depois, na migration de situacoes,
-        // porque doadores e situacoes se referenciam mutuamente
-        table.integer("situacao_id").unsigned().nullable()
         table.timestamps(true, true)
     })
 };

@@ -8,6 +8,12 @@ async function buscarPorId(id) {
     return connection("situacoes").where({ id }).first()
 }
 
+async function buscarBloqueiosPorDoador(doador_id) {
+    return connection("situacoes")
+        .where({ doador_id })
+        .whereNotNull("tipo_bloqueio_id")
+}
+
 async function criar(dados) {
     const [id] = await connection("situacoes").insert(dados)
     return buscarPorId(id)
@@ -25,6 +31,7 @@ async function deletar(id) {
 module.exports = {
     listarTodos,
     buscarPorId,
+    buscarBloqueiosPorDoador,
     criar,
     atualizar,
     deletar

@@ -5,7 +5,8 @@
 exports.up = function(knex) {
     return knex.schema.createTable("tipos_bloqueio", (table) => {
         table.increments("id").primary()
-        table.string("descricao", 50).notNullable()
+        table.string("descricao", 50).notNullable().unique()
+        table.integer("prazo_dias").unsigned().nullable()
         table.timestamps(true, true)
     })
 };

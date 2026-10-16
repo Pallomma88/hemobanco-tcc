@@ -5,7 +5,7 @@
 exports.up = function(knex) {
     return knex.schema.createTable("tipos_sanguineos", (table) => {
         table.increments("id").primary()
-        table.string("descricao", 5).notNullable()
+        table.string("descricao", 5).notNullable().unique()
         table.timestamps(true, true)
     })
 };

@@ -13,12 +13,6 @@ exports.up = function(knex) {
         table.integer("doador_id").unsigned().nullable()
             .references("id").inTable("doadores")
         table.timestamps(true, true)
-    }).then(() => {
-        // fecha a referencia circular: agora que situacoes existe,
-        // adiciona a FK pendente em doadores.situacao_id
-        return knex.schema.alterTable("doadores", (table) => {
-            table.foreign("situacao_id").references("id").inTable("situacoes")
-        })
     })
 };
 
@@ -27,9 +21,5 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-    return knex.schema.alterTable("doadores", (table) => {
-        table.dropForeign("situacao_id")
-    }).then(() => {
-        return knex.schema.dropTable("situacoes")
-    })
+    return knex.schema.dropTable("situacoes")
 };

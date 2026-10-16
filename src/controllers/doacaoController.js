@@ -33,19 +33,17 @@ async function criar(req, res) {
             return res.status(400).json({ error: "doador_id inválido" })
         }
 
-        // Doador bloqueado: situacao_id aponta pra uma situação com tipo_bloqueio_id
+            // Doador bloqueado: existe uma situação desse doador com tipo_bloqueio_id
         // preenchido, e o bloqueio ainda não venceu (sem data_limite, ou data_limite no futuro)
-        if (doador.situacao_id) {
-            const situacao = await situacaoModel.buscarPorId(doador.situacao_id)
-            if (situacao && situacao.tipo_bloqueio_id) {
-                const bloqueioAtivo = !situacao.data_limite || new Date(situacao.data_limite) >= new Date(data_doacao)
-                if (bloqueioAtivo) {
-                    return res.status(400).json({
-                        error: `Doador está bloqueado para doação: ${situacao.motivo || situacao.descricao}${situacao.data_limite ? ` (até ${situacao.data_limite})` : ""}`
-                    })
-                }
-            }
-        }
+        const bloqueios = await situacaoModel.buscarBloqueiosPorDoador(doador_id)
+        const situacao = bloqueios.find(
+            (s) => !s.data_limite || new Date(s.data_limite) >= new Date(data_doacao)
+        )
+        if (situacao) {
+            return res.status(400).json({
+                error: `Doador está bloqueado para doação: ${situacao.motivo || situacao.descricao}${situacao.data_limite ? ` (até ${situacao.data_limite})` : ""}`
+            })
+        }    
 
         const ultimaDoacao = await doacaoModel.buscarUltimaDoacaoDoDoador(doador_id)
         if (ultimaDoacao) {

@@ -1,7 +1,6 @@
 exports.seed = async function(knex) {
     // Limpa as tabelas na ordem certa (das que dependem de outras, para as que não dependem)
     await knex("doacoes").del()
-     await knex("doadores").update({ situacao_id: null })
     await knex("situacoes").del()
     await knex("doadores").del()
     await knex("funcionarios").del()
@@ -42,11 +41,24 @@ exports.seed = async function(knex) {
     ])
 
     await knex("tipos_bloqueio").insert([
-        { descricao: "Bloqueio temporário - anemia" },
-        { descricao: "Bloqueio temporário - viagem para área de risco" },
-        { descricao: "Bloqueio temporário - uso de medicação" },
-        { descricao: "Bloqueio permanente" }
-    ])
+    { descricao: "Bloqueio temporário - anemia", prazo_dias: 30 },
+    { descricao: "Bloqueio temporário - viagem para área de risco", prazo_dias: 30 },
+    { descricao: "Bloqueio temporário - uso de medicação", prazo_dias: 30 },
+    { descricao: "Bloqueio permanente", prazo_dias: null },
+    { descricao: "Tatuagem/maquiagem definitiva/botox - local seguro", prazo_dias: 7 },
+    { descricao: "Tatuagem/maquiagem definitiva - sem comprovação sanitária", prazo_dias: 120 },
+    { descricao: "Piercing oral ou genital", prazo_dias: 120 },
+    { descricao: "Tuberculose após cura", prazo_dias: 730 },
+    { descricao: "Cirurgia bariátrica", prazo_dias: 180 },
+    { descricao: "Endoscopia/colonoscopia/laparoscopia", prazo_dias: 120 },
+    { descricao: "Compartilhamento de caneta injetável", prazo_dias: 120 },
+    { descricao: "PrEP oral", prazo_dias: 120 },
+    { descricao: "PrEP injetável", prazo_dias: 730 },
+    { descricao: "Parceiro sexual casual ou ocasional", prazo_dias: 120 },
+    { descricao: "Covid-19", prazo_dias: 10 },
+    { descricao: "Chikungunya", prazo_dias: 30 },
+    { descricao: "Histórico de câncer", prazo_dias: 1825 }
+])
 
     await knex("instituicoes").insert([
         { cnpj: "45.897.321/0001-12", nome: "Hospital São Lucas", email: "contato@hospitalsaolucas.com.br", endereco_id: 1 },
@@ -93,9 +105,7 @@ exports.seed = async function(knex) {
         }
     ])
 
-    // agora que situacoes existe, vincula a situação atual de alguns doadores
-    await knex("doadores").where({ id: 6 }).update({ situacao_id: 3 })
-    await knex("doadores").where({ id: 9 }).update({ situacao_id: 4 })
+    
 
     await knex("doacoes").insert([
         { data_doacao: "2026-08-10T09:15:00", doador_id: 1, funcionario_id: 1, tipo_doacao_id: 1, situacao_id: 1 },
