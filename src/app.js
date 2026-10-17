@@ -1,5 +1,7 @@
 const express = require("express")
 
+const cors = require("cors")
+
 const testRoutes = require("./routes/testRoutes")
 const doadorRoutes = require("./routes/doadorRouters")
 const tipoSanguineoRoutes = require("./routes/tipoSanguineoRouter")
@@ -13,6 +15,7 @@ const doacaoRoutes = require("./routes/doacaoRouter")
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 
 app.use("/test", testRoutes)
