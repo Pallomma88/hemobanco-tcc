@@ -12,11 +12,14 @@ const tipoDoadorRouter = require("./routes/tipoDoacaoRouter")
 const tipoBloqueioRoutes = require("./routes/tipoBloqueioRouter")
 const situacaoRoutes = require("./routes/situacaoRouter")
 const doacaoRoutes = require("./routes/doacaoRouter")
+const setupSwagger = require("./docs/swagger")
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
+
+setupSwagger(app)
 
 app.use("/test", testRoutes)
 app.use("/doadores", doadorRoutes)
