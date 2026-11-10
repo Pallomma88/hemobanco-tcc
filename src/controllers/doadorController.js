@@ -21,6 +21,9 @@ async function listarTodos(req, res) {
             res.status(201).json(doador)
         } catch (error) {
             if (error.code === 'SQLITE_CONSTRAINT') {
+                if (String(error.message).includes('UNIQUE')) {
+                    return res.status(400).json({ error: "Já existe um doador cadastrado com este CPF" })
+                }
                 return res.status(400).json({ error: "tipo_sanguineo_id ou endereco_id inválido" })
             }
             res.status(500).json({ error: "Erro ao criar doador" })
@@ -35,7 +38,10 @@ async function listarTodos(req, res) {
         if (!doador) return res.status(404).json({ error: "Doador não encontrado" })
         res.json(doador)
     } catch (error) {
-        if (error.code === 'SQLITE_CONSTRAINT') {
+        if (error.code === 'SQLITE_CONSTRAINT') { 
+            if (String(error.message).includes('UNIQUE')) {
+                    return res.status(400).json({ error: "Já existe um doador cadastrado com este CPF" })
+                }
             return res.status(400).json({ error: "tipo_sanguineo_id ou endereco_id inválido" })
         }
         res.status(500).json({ error: "Erro ao atualizar doador" })
